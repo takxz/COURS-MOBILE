@@ -1,65 +1,73 @@
-import { Image, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
-import { useState } from 'react';
-
+import ProductCard from "@/components/ProductCard/ProductCard";
+import { Search } from "lucide-react-native";
+import { useEffect, useState } from "react";
+import { Pressable, StyleSheet, Text, TextInput, View, ScrollView } from "react-native";
 
 export default function HomeScreen() {
+  const [productList, setProductList] = useState([]);
 
-  const [value, setValue] = useState('');
+  useEffect(() => {
+    async function loadProducts() {
+      const response = await fetch("https://dummyjson.com/products");
+      const data = await response.json();
+      setProductList(data.products);
+    }
+    loadProducts();
+  }, []);
+
   return (
-      <View>
-        <Text style={styles.helloText}>Salut</Text>
-        <ScrollView style={styles.scroll}>
-        <Image style={styles.image} source={{ uri: 'https://64.media.tumblr.com/4383f7a729fd5263d1094d3865e5a8e9/af2f226d6a9e5953-23/s1280x1920/d78989e20788177081daaba5978968b2611b8ecc.jpg' }} />
-        <Image style={styles.image} source={{ uri: 'https://64.media.tumblr.com/4383f7a729fd5263d1094d3865e5a8e9/af2f226d6a9e5953-23/s1280x1920/d78989e20788177081daaba5978968b2611b8ecc.jpg' }} />
-
-        <Image style={styles.image} source={{ uri: 'https://64.media.tumblr.com/4383f7a729fd5263d1094d3865e5a8e9/af2f226d6a9e5953-23/s1280x1920/d78989e20788177081daaba5978968b2611b8ecc.jpg' }} />
-
-        <Image style={styles.image} source={{ uri: 'https://64.media.tumblr.com/4383f7a729fd5263d1094d3865e5a8e9/af2f226d6a9e5953-23/s1280x1920/d78989e20788177081daaba5978968b2611b8ecc.jpg' }} />
-
-        <Image style={styles.image} source={{ uri: 'https://64.media.tumblr.com/4383f7a729fd5263d1094d3865e5a8e9/af2f226d6a9e5953-23/s1280x1920/d78989e20788177081daaba5978968b2611b8ecc.jpg' }} />
-
-        <Image style={styles.image} source={{ uri: 'https://64.media.tumblr.com/4383f7a729fd5263d1094d3865e5a8e9/af2f226d6a9e5953-23/s1280x1920/d78989e20788177081daaba5978968b2611b8ecc.jpg' }} />
-
-        <Image style={styles.image} source={{ uri: 'https://64.media.tumblr.com/4383f7a729fd5263d1094d3865e5a8e9/af2f226d6a9e5953-23/s1280x1920/d78989e20788177081daaba5978968b2611b8ecc.jpg' }} />
-        </ScrollView>
-        <TextInput placeholder="Entrez votre texte ici" style={styles.textInput} onKeyPress={(e) => setValue(e.target.value)} />
-        <Pressable onPress={() => alert('Bouton pressé!')} style={styles.button}>
-          <Text style={styles.buttonText}>Appuyez-moi</Text>
+    <ScrollView>
+    <View style={styles.page}>
+      <View style={styles.searchBar}>
+        <TextInput
+          placeholder="Recherchez..."
+          style={styles.searchInput}
+        />
+        <Pressable onPress={() => console.log()}>
+          <Text style={styles.searchButton}>
+            <Search />
+          </Text>
         </Pressable>
       </View>
+      <View style={styles.productList}>
+        {productList.map((product:any) => {
+          return (
+            <ProductCard key={`product-${product.id}`} product={product}/>
+          );}
+        )}
+      </View>
+    </View>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  helloText : {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: 'blue',
+  page: {
+    padding: 10,
   },
-  image: {
-    width: 200,
-    height: 200,
-  },
-  textInput: {
-    height: 40,
-    borderColor: 'gray',
+  searchBar: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    borderColor: "#B0B0B0",
+    borderRadius: 4,
     borderWidth: 1,
-    marginTop: 10,
-    padding: 10,
-    width: '50%',
+    padding: 5,
+    marginBottom: 10,
   },
-  button: {
-    backgroundColor: 'blue',
-    padding: 10,
-    marginTop: 10,
-    width: '50%',
-    alignItems: 'center',
+  searchInput: {
+    padding: 5,
+    width: "90%",
+    ...{outlineStyle: "none"} as any,
   },
-  buttonText: {
-    color: 'white',
-    fontWeight: 'bold',
+  searchButton: {
+    color: "gray",
   },
-  scroll:{
-    height: 200,
-  }
+  productList: {
+    display: "flex",
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: 10,
+    width: "100%",
+  },
 });

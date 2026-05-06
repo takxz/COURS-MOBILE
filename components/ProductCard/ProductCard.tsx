@@ -1,59 +1,66 @@
-import { Text, View, StyleSheet, Image, Dimensions } from "react-native";
+import { Link } from "expo-router";
+import { Dimensions, Image, StyleSheet, Text, View } from "react-native";
 
-export default function ProductCard({ product }: { product: any }) {
+export default function ProductCard({product}:{product: any}){
 
-      const reduceDescription = () => {
-      if (product.description.length < 100) {
-        return product.description;
-      }
-      return product.description.substring(0, 100) + "...";
+    const reduceDescription = () => {
+        if(product.description.length < 50){
+            return product.description;
+        }
+        return product.description.substr(0,50) + "...";
     }
-  return (
-
-    <View style={styles.container}>
-        <View style={styles.imageContainer}>
-          <Image source={{ uri: product.thumbnail }} style={styles.image} resizeMode="contain" />
+    
+    return (
+      <Link href={{
+        pathname: "/product/[id]",
+        params: {id: product.id}
+      }}>
+        <View style={styles.product}>
+            <View style={styles.productPicture}>
+                <Image source={{uri: product.thumbnail}} style={styles.productImage} />
+            </View>
+            <View style={styles.productContent}>
+                <Text style={styles.productTitle}>{product.title}</Text>
+                <Text style={styles.productDescription}>{reduceDescription()}</Text>
+                <Text style={styles.productPrice}>{product.price} €</Text>
+            </View>
         </View>
-        <Text style={styles.title}>{product.title}</Text>
-        <Text style={styles.description}>{reduceDescription()}</Text>
-        <Text style={styles.price}>{product.price}€</Text>
-    </View>
-  );
-
-
+      </Link>
+    )
 }
-  const styles = StyleSheet.create({
-    container: {
-      padding: 10,
-      borderColor: "#B0B0B0",
-      borderRadius: 4,
-      borderWidth: 1,
-      marginBottom: 10,
-      width: (Dimensions.get("window").width / 2) - 20,
+    
+
+const styles = StyleSheet.create({
+    product: {
+        display: "flex",
+        width: (Dimensions.get('window').width /2)-18,
+        backgroundColor: "#202020",
+        borderRadius: 8,
+        overflow: "hidden"
     },
-    image: {
-        width: "100%",
-        height: "100%",
+    productPicture:{
+        marginBottom: 10,
+        backgroundColor: "white"
     },
-    title: {
-      fontSize: 16,
-      fontWeight: "bold",
-      marginBottom: 5,
+    productImage:{
+        height: 100
     },
-    description: {
-      fontSize: 14,
-      marginBottom: 5,
+    productTitle:{
+        color: "white",
+        fontSize: 10,
+        fontWeight: 700
     },
-    price: {
-      fontSize: 18,
-      fontWeight: "bold",
-      color: "green",
+    productDescription:{
+        color: "white",
+        fontSize: 9,
     },
-    imageContainer: {
-      height: 200,
-      width: "100%",
-      borderRadius: 8,
-      overflow: "hidden",
-      backgroundColor: "#f2f2f2",
+    productContent:{
+        padding: 8,
     },
-  });
+    productPrice: {
+        color: "white",
+        fontSize: 14,
+        fontWeight: 800,
+        alignSelf: "flex-end"
+    }
+})
